@@ -6,7 +6,7 @@ import qs.Ui
 
 BarWidget {
   id: root
-  moduleName: "dev.omabongo.bongocat"
+  moduleName: "io.github.chip-davis.omabongo"
 
   property bool permissionError: false
   property bool sawAnyOutput: false

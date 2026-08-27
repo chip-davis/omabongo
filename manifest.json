@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "dev.omabongo.bongocat",
+  "id": "io.github.chip-davis.omabongo",
   "name": "Bongo Cat",
   "version": "0.1.0",
   "author": "chip-davis",
