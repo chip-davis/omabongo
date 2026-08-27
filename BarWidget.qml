@@ -17,6 +17,37 @@ BarWidget {
 
 
   property bool tooltipHovered: false
+  property real spriteScale: 2.2
+  property real sleepAfterMs: 20000
+  property real tapDurationMs: 110
+  property bool sleepEnabled: true
+
+  FileView {
+    id: configFile
+    path: Quickshell.env("HOME") + "/.config/omabongo/config.json"
+    watchChanges: true      // live-reload when you hand-edit the file
+    printErrors: false      // suppress the "file doesn't exist" spam on first run
+    onLoaded: root.applyConfig(text())
+    onLoadFailed: function(error) { root.applyConfig("") }   // missing file → defaults
+    onFileChanged: reload()  // watchChanges fires this; triggers onLoaded again
+  }
+
+  function applyConfig(raw) {
+    var text = String(raw || "").trim()
+    var parsed = {}
+    if (text) {
+      try {
+        parsed = JSON.parse(text)
+      } catch (e) {
+        console.warn("omabongo config.json parse failed, using defaults:", e)
+        parsed = {}
+      }
+    }
+    root.spriteScale = (typeof parsed.scale === "number") ? parsed.scale : 2.2
+    root.sleepAfterMs = (typeof parsed.sleepAfterMs === "number") ? parsed.sleepAfterMs : 20000
+    root.tapDurationMs = (typeof parsed.tapDurationMs === "number") ? parsed.tapDurationMs : 110
+    root.sleepEnabled = (typeof parsed.sleepEnabled === "boolean") ? parsed.sleepEnabled : true
+  }
 
   function assetFor(p) {
     switch (p) {
@@ -34,23 +65,29 @@ BarWidget {
     tapReleaseTimer.restart()
   }
 
-  implicitWidth: barSize
+  // Bar.qml doesn't clip widget slots, so we can size the sprite well past
+  // the strip's own height (barSize is only ~26px by default) and let it
+  // overflow above/below — reads much better than a cramped icon-sized cat.
+  readonly property real spriteSize: barSize * root.spriteScale
+
+  implicitWidth: spriteSize
   implicitHeight: barSize
 
   Image {
     id: sprite
-    anchors.fill: parent
-    anchors.margins: Style.space(2)
+    anchors.centerIn: parent
+    width: root.spriteSize
+    height: root.spriteSize
     source: root.assetFor(root.pose)
     fillMode: Image.PreserveAspectFit
-    sourceSize.width: root.barSize
-    sourceSize.height: root.barSize
+    sourceSize.width: root.spriteSize
+    sourceSize.height: root.spriteSize
     smooth: true
   }
 
   Text {
-    anchors.right: parent.right
-    anchors.bottom: parent.bottom
+    anchors.right: sprite.right
+    anchors.bottom: sprite.bottom
     text: "⚠"
     visible: root.permissionError
     font.pixelSize: Style.font.caption
@@ -60,15 +97,15 @@ BarWidget {
 
   Timer {
     id: tapReleaseTimer
-    interval: 110
+    interval: root.tapDurationMs
     onTriggered: if (root.pose !== "sleeping") root.pose = "up"
   }
 
   Timer {
     id: sleepTimer
-    interval: 20000
+    interval: root.sleepAfterMs
     running: true
-    onTriggered: root.pose = "sleeping"
+    onTriggered: if (root.sleepEnabled) root.pose = "sleeping"
   }
 
   Process {
@@ -100,7 +137,7 @@ BarWidget {
   }
 
   MouseArea {
-    anchors.fill: parent
+    anchors.fill: sprite
     hoverEnabled: true
     onEntered: {
       root.tooltipHovered = true
