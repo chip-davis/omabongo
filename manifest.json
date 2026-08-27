@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "dev.omabongo.bongocat",
+  "name": "Bongo Cat",
+  "version": "0.1.0",
+  "author": "chip-davis",
+  "license": "MIT",
+  "description": "A cat in the bar that bongos every time you type",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Bongo Cat",
+    "description": "Cat that reacts to keyboard activity",
+    "category": "Fun",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
