@@ -24,3 +24,13 @@ Then log out and back in (or reboot) for the group change to apply.
 ```sh
 omarchy plugin add https://github.com/chip-davis/omabongo.git --enable
 ```
+
+## Config
+Edit / create ~/.config/omabongo/config.json. Supported options:
+
+| Key           | Type   | Default | Controls                           |
+|---------------|--------|---------|------------------------------------|
+| scale         | number | 2.2     | sprite size multiplier of  barSize |
+| sleepAfterMs  | number | 20000   | inactivity time before sleeping    |
+| tapDurationMs | number | 110     | how long his paws are down         |
+| sleepEnabled  | bool   | true    | controls if bongocat goes to sleep |
