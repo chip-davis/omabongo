@@ -41,3 +41,9 @@ Uninstall with
 ```sh
 omarchy plugin remove io.github.chip-davis.omabongo
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE). The cat sprites in `assets/` are derived from
+[wayland-bongocat](https://github.com/saatvik333/wayland-bongocat); see
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
