@@ -1,6 +1,8 @@
 # Bongo Cat — Omarchy Quattro bar widget
 
-A cat in the Omarchy bar that bounces every time you type.
+A cat in the Omarchy bar that bongos every time you type.
+
+![omabongo](./assets/demo.gif)
 
 ## Requirements
 
