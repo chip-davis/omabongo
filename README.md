@@ -33,7 +33,9 @@ Edit / create ~/.config/omabongo/config.json. Supported options:
 | scale         | number | 2.2     | sprite size multiplier of  barSize |
 | sleepAfterMs  | number | 20000   | inactivity time before sleeping    |
 | tapDurationMs | number | 110     | how long his paws are down         |
+| upDurationMs  | number | 60      | how long his paws pop up between taps |
 | sleepEnabled  | bool   | true    | controls if bongocat goes to sleep |
+| alternatePaws | bool   | false   | true = strict L/R/L/R, false = random paw each tap |
 
 
 ## Uninstall

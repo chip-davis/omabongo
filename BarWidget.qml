@@ -10,7 +10,7 @@ BarWidget {
 
   property bool permissionError: false
   property bool sawAnyOutput: false
-  property bool lastPawWasLeft: false
+  property bool leftPaw: false
 
   // "up" | "left" | "right" | "sleeping"
   property string pose: "up"
@@ -20,7 +20,9 @@ BarWidget {
   property real spriteScale: 2.2
   property real sleepAfterMs: 20000
   property real tapDurationMs: 110
+  property real upDurationMs: 60
   property bool sleepEnabled: true
+  property bool alternatePaws: false
 
   FileView {
     id: configFile
@@ -46,7 +48,9 @@ BarWidget {
     root.spriteScale = (typeof parsed.scale === "number") ? parsed.scale : 2.2
     root.sleepAfterMs = (typeof parsed.sleepAfterMs === "number") ? parsed.sleepAfterMs : 20000
     root.tapDurationMs = (typeof parsed.tapDurationMs === "number") ? parsed.tapDurationMs : 110
+    root.upDurationMs = (typeof parsed.upDurationMs === "number") ? parsed.upDurationMs : 60
     root.sleepEnabled = (typeof parsed.sleepEnabled === "boolean") ? parsed.sleepEnabled : true
+    root.alternatePaws = (typeof parsed.alternatePaws === "boolean") ? parsed.alternatePaws : false
   }
 
   function assetFor(p) {
@@ -58,11 +62,15 @@ BarWidget {
     }
   }
 
+  property string pendingPose: "up"
+
   function onKeyTap() {
     sleepTimer.restart()
-    lastPawWasLeft = !lastPawWasLeft
-    pose = lastPawWasLeft ? "left" : "right"
-    tapReleaseTimer.restart()
+    tapReleaseTimer.stop()
+    leftPaw = root.alternatePaws ? !leftPaw : (Math.random() < 0.5)
+    pendingPose = leftPaw ? "left" : "right"
+    pose = "up"          // always pass through "up" so repeated same-side taps still pulse
+    pawDownTimer.restart()
   }
 
   // Bar.qml doesn't clip widget slots, so we can size the sprite well past
@@ -94,6 +102,15 @@ BarWidget {
     color: "#ffb454"
   }
 
+
+  Timer {
+    id: pawDownTimer
+    interval: root.upDurationMs
+    onTriggered: {
+      root.pose = root.pendingPose
+      tapReleaseTimer.restart()
+    }
+  }
 
   Timer {
     id: tapReleaseTimer
